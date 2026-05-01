@@ -1,14 +1,15 @@
 from django.shortcuts import render
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, RedirectView
 from .models import Post
+from django.shortcuts import get_object_or_404
 
-def indexView(request):
-    '''
-    A function based view to show index page
-    '''
-    name = 'ali'
-    context = {"name":name}
-    return render(request, "index.html",context)
+# def indexView(request):
+#     '''
+#     A function based view to show index page
+#     '''
+#     name = 'ali'
+#     context = {"name":name}
+#     return render(request, "index.html",context)
 
 class IndexView(TemplateView):
     '''
@@ -21,3 +22,15 @@ class IndexView(TemplateView):
         context["name"] = "ali"
         context["post"] = Post.object.all()
         return context
+    
+# from django.shourtcuts import redirect
+# def redirectToMaktab(request):
+#     return redirect('https://maktabkhooneh.com')
+
+class RedirectToMaktab(RedirectView):
+    url = 'https://maktabkhooneh.com'
+
+    def get_redirect_url(self, *args, **kwargs):
+        post = get_object_or_404(Post, pk=kwargs['pk'])
+        print(post)
+        return super().get_redirect_url(*args, **kwargs)
