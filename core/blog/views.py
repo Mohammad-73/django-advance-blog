@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.views.generic.base import TemplateView, RedirectView
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, FormView, CreateView
 from .models import Post
 from django.shortcuts import get_object_or_404
+from .forms import PostForm
 
 # def indexView(request):
 #     '''
@@ -36,7 +37,7 @@ class RedirectToMaktab(RedirectView):
         print(post)
         return super().get_redirect_url(*args, **kwargs)
     
-class PostList(ListView):
+class PostListView(ListView):
     model = Post
     # queryset = Post.objects.all()
     context_object_name = 'posts'
@@ -49,3 +50,17 @@ class PostList(ListView):
 
 class PostDetailView(DetailView):
     model = Post
+
+# class PostCreateView(FormView):
+#     template_name = 'contact.html'
+#     form_class = PostForm
+#     success_url = '/blog/post/'
+
+#     def form_valid(self, form):
+#         form.save()
+#         return super().form_valid(form)
+    
+class PostCreateView(CreateView):
+    model = Post
+    fields = ['author', 'title', 'content', 'status', 'category', 'published_date']
+    success_url = '/blog/post/'
