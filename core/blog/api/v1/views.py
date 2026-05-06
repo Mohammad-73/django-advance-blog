@@ -1,11 +1,14 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAdmin
 from rest_framework.response import Response
 from .serializers import PostSerializer
 from ...models import Post
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
+
 @api_view("GET","POST")
+@permission_classes([IsAuthenticatedOrReadOnly])
 def api_post_list_view(request):
     if request.method == "GET":
         posts = Post.objects.filter(status=True)
