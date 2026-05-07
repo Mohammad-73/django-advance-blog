@@ -5,20 +5,37 @@ from .serializers import PostSerializer
 from ...models import Post
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
 
 
-@api_view("GET","POST")
-@permission_classes([IsAuthenticatedOrReadOnly])
-def api_post_list_view(request):
-    if request.method == "GET":
+# @api_view("GET","POST")
+# @permission_classes([IsAuthenticatedOrReadOnly])
+# def api_post_list_view(request):
+#     if request.method == "GET":
+#         posts = Post.objects.filter(status=True)
+#         serializer = PostSerializer(posts,many=True)
+#         return Response(serializer.data)
+#     elif request.method == "POST":
+#         serializer = PostSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
+    
+class PostList(APIView):
+    '''Getting a list of posts and creating posts'''
+    def get(self,request):
+        '''Retrieving a list of posts'''
         posts = Post.objects.filter(status=True)
         serializer = PostSerializer(posts,many=True)
         return Response(serializer.data)
-    elif request.method == "POST":
+    
+    def post(self,request):
+        '''Creating a post with provided data'''
         serializer = PostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
 
 @api_view("GET","PUT","DELETE")
 def postDetail(request,id):
