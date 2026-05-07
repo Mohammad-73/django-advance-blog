@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAdmin
 from rest_framework.response import Response
 from .serializers import PostSerializer
@@ -23,6 +23,9 @@ from rest_framework.views import APIView
     
 class PostList(APIView):
     '''Getting a list of posts and creating posts'''
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+
     def get(self,request):
         '''Retrieving a list of posts'''
         posts = Post.objects.filter(status=True)
@@ -37,26 +40,52 @@ class PostList(APIView):
         return Response(serializer.data)
 
 
-@api_view("GET","PUT","DELETE")
-def postDetail(request,id):
-    # try:       
-    #     post = Post.objects.get(pk=id)
-    #     serializer = PostSerializer(post)
-    #     return Response(serializer.data)
-    # except Post.DoesNotExist:
-    #     return Response({"detail":"Post does not exist"},status=status.HTTP_404_NOT_FOUND)
-    # post = get_object_or_404(Post,pk=id,status=True)
-    # serializer = PostSerializer(post)
-    # return Response(serializer.data)
-    post = get_object_or_404(Post,pk=id,status=True)
-    if request.method == "GET":
-        serializer = PostSerializer(post)
+# @api_view("GET","PUT","DELETE")
+# def postDetail(request,id):
+#     # try:       
+#     #     post = Post.objects.get(pk=id)
+#     #     serializer = PostSerializer(post)
+#     #     return Response(serializer.data)
+#     # except Post.DoesNotExist:
+#     #     return Response({"detail":"Post does not exist"},status=status.HTTP_404_NOT_FOUND)
+#     # post = get_object_or_404(Post,pk=id,status=True)
+#     # serializer = PostSerializer(post)
+#     # return Response(serializer.data)
+#     post = get_object_or_404(Post,pk=id,status=True)
+#     if request.method == "GET":
+#         serializer = PostSerializer(post)
+#         return Response(serializer.data)
+#     elif request.method == "PUT":
+#         serializer = PostSerializer(post,data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
+#     elif request.method == "DELETE":
+#         post.delete()
+#         return Response({"Detail":"Item removed successfully"},status=status.HTTP_204_NO_CONTENT)
+    
+class PostDetail(APIView):
+    '''Getting detail of the post and edit plus removing it'''
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    serializer_class = PostSerializer
+
+    def get(self,request,id):
+        '''Retrieving the post data'''
+        post = get_object_or_404(Post,pk=id,status=True)
+        serializer = self.serializer_class(post)
         return Response(serializer.data)
-    elif request.method == "PUT":
+    
+    def put(self,request,id):
+        '''Editing the post data'''
+        post = get_object_or_404(Post,pk=id,status=True)
         serializer = PostSerializer(post,data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-    elif request.method == "DELETE":
+    
+    def delete(self,request,id):
+        '''Removing the post'''
+        post = get_object_or_404(Post,pk=id,status=True)
         post.delete()
         return Response({"Detail":"Item removed successfully"},status=status.HTTP_204_NO_CONTENT)
+
