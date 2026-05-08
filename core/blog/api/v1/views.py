@@ -6,6 +6,8 @@ from ...models import Post
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView
+from rest_framework import mixins
 
 
 # @api_view("GET","POST")
@@ -21,24 +23,38 @@ from rest_framework.views import APIView
 #         serializer.save()
 #         return Response(serializer.data)
     
-class PostList(APIView):
+# class PostList(APIView):
+#     '''Getting a list of posts and creating posts'''
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+#     serializer_class = PostSerializer
+
+#     def get(self,request):
+#         '''Retrieving a list of posts'''
+#         posts = Post.objects.filter(status=True)
+#         serializer = PostSerializer(posts,many=True)
+#         return Response(serializer.data)
+    
+#     def post(self,request):
+#         '''Creating a post with provided data'''
+#         serializer = PostSerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
+
+class PostList(ListCreateAPIView):
     '''Getting a list of posts and creating posts'''
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostSerializer
+    queryset = Post.objects.filter(status=True)
 
-    def get(self,request):
-        '''Retrieving a list of posts'''
-        posts = Post.objects.filter(status=True)
-        serializer = PostSerializer(posts,many=True)
-        return Response(serializer.data)
+    # def get(self, request, *args, **kwargs):
+    #     '''Retrieving a list of posts'''
+    #     return self.list(request, *args, **kwargs)
     
-    def post(self,request):
-        '''Creating a post with provided data'''
-        serializer = PostSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
+    # def post(self, request, *args, **kwargs):
+    #     '''Retrieving a list of posts'''
+    #     return self.create(request, *args, **kwargs)
+    
 
 # @api_view("GET","PUT","DELETE")
 # def postDetail(request,id):
