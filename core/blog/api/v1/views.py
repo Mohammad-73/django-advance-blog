@@ -134,3 +134,15 @@ class PostViewSet(viewsets.ViewSet):
         post_object = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(post_object)
         return Response(serializer.data)
+    
+    def create(self, request):
+        pass
+
+    def update(self, request):
+        pass
+    
+    def partial_update(self, request):
+        pass
+    
+    def destroy(self, request):
+        pass
