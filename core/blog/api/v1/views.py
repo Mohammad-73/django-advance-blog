@@ -13,6 +13,7 @@ from rest_framework.decorators import action
 from .permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter,OrderingFilter
+from .paginations import DefaultPagination
 
 # @api_view("GET","POST")
 # @permission_classes([IsAuthenticatedOrReadOnly])
@@ -132,6 +133,7 @@ class PostModelViewSet(viewsets.ModelViewSet):
     filterset_fields = ['category', 'author', 'status']
     search_fields = ['=title', 'content']
     ordering_fields = ['published_date']
+    pagination_class = DefaultPagination
 
     # @action(methods=["get"],detail=False)
     # def get_ok(self,request):
