@@ -10,8 +10,7 @@ from rest_framework import viewsets
 from rest_framework.generics import GenericAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import mixins
 from rest_framework.decorators import action
-
-
+from .permissions import IsOwnerOrReadOnly
 
 # @api_view("GET","POST")
 # @permission_classes([IsAuthenticatedOrReadOnly])
@@ -124,7 +123,7 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
     #     return self.destroy(request, *args, **kwargs)
     
 class PostModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     queryset = Post.objects.filter(status=True)
 
