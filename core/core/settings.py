@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'blog',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
 
+# Rest_Framework Settings
