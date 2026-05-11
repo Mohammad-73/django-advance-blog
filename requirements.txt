@@ -1,3 +1,4 @@
+# General modules
 asgiref==3.11.1
 certifi==2026.4.22
 charset-normalizer==3.4.7
@@ -18,3 +19,8 @@ requests==2.33.1
 sqlparse==0.5.5
 uritemplate==4.2.0
 urllib3==2.7.0
+
+# Third party modules
+drf-spectacular
+
+# Deployment modules

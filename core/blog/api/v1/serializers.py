@@ -15,13 +15,13 @@ class CategorySerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     snippet = serializers.ReadOnlyField(source='get_snippet')
     relative_url = serializers.URLField(source='get_absolute_api_url',read_only=True)
-    absolute_rul = serializers.SerializerMethodField(method_name='get_abs_url')
+    absolute_url = serializers.SerializerMethodField(method_name='get_abs_url')
     # category = serializers.SlugRelatedField(many=False,field='name',queryset=Category.objects.all())
     # category = CategorySerializer()
 
     class Meta:
         model = Post
-        field = ['id','author','image','title','content','snippet','category','status','relative_url','absolute_url','created_date','published_date']
+        fields = ['id','author','image','title','content','snippet','category','status','relative_url','absolute_url','created_date','published_date']
         read_only_fields = ['author']
 
     def get_abs_url(self,obj):
