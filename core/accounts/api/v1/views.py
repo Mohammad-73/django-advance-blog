@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.contirib.auth import get_user_model
+from django.contrib.auth import get_user_model
 from ...models import Profile
 from django.shortcuts import get_object_or_404
 
