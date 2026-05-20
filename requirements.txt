@@ -24,3 +24,6 @@ urllib3==2.7.0
 drf-spectacular
 
 # Deployment modules
+
+# Email third party modules
+django-mail-templated
