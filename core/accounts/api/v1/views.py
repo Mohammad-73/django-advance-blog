@@ -13,6 +13,7 @@ from ...models import Profile
 from django.shortcuts import get_object_or_404
 # from django.core.mail import send_mail
 from mail_templated import send_mail
+from ..utils import EmailThread
 
 User = get_user_model()
 
@@ -95,5 +96,6 @@ class TestEmailSend(generics.GenericAPIView):
         #     ['to@example.com'],
         #     fail_silently=False
         # )
-        send_mail('email/hello.tpl', {'user': 'Mohammad'}, 'admin@admin.com', ['mkh@gmail.com'])
+        email_obj = EmailMessage('email/hello.tpl', {'user': 'Mohammad'}, 'admin@admin.com', to=['mkh@gmail.com'])
+        EmailThread.send(email_obj).start()
         return Response("email sent")
