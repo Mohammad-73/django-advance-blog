@@ -9,9 +9,10 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     # Registration
     path('registration/', views.RegistrationAPIView.as_view(), name='registration'),
-
     path('test-email/', views.TestEmailSend.as_view(), name='test-email'),
+
     # Activation
+    path('activation/confirm/<str:token>', views.ActivationAPIView.as_view(), name='activation'),
     # path('activation/confirm/')
     
     # Resend activation
