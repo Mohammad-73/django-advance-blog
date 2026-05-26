@@ -13,6 +13,9 @@ urlpatterns = [
 
     # Activation
     path('activation/confirm/<str:token>', views.ActivationAPIView.as_view(), name='activation'),
+    
+    # Resend activation
+    path('activation/resend/<str:token>', views.ActivationResendAPIView.as_view(), name='activation-resend'),
     # path('activation/confirm/')
     
     # Resend activation

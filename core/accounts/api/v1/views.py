@@ -15,6 +15,10 @@ from django.shortcuts import get_object_or_404
 from mail_templated import send_mail
 from ..utils import EmailThread
 from rest_framework_simplejwt.tokens import RefreshToken
+import jwt
+from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+from django.conf import settings
+
 
 User = get_user_model()
 
@@ -119,5 +123,35 @@ class TestEmailSend(generics.GenericAPIView):
         return  str(refresh.access_token)
 
 class ActivationAPIView(APIView):
-    def post(self, request, token, *args, **kwargs):
-        return Response(token)
+    def get(self, request, token, *args, **kwargs):
+        try:
+            token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = token.get("user_id")
+        except ExpiredSignatureError:
+            return Response({"details": "token has been expired"}, status=status.HTTP_400_BAD_REQUEST)
+        except InvalidSignatureError:
+            return Response({"details": "token is not valid"}, status=status.HTTP_400_BAD_REQUEST) 
+        user_obj = User.objects.get(pi = user_id)
+        if user_obj.is_verified:
+            return Response({"details": "Your account has already been verified"})    
+        user_obj.is_verified = True
+        user_obj.save()
+        return Response({"details": "Your account have been verified and activated successfully"})
+    
+class ActivationResendAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        if email:
+            self.email = "khalili.mohammad@gmail.com"
+            user_obj = get_object_or_404(User, email = self.email)
+            token = self.get_tokens_for_user(user_obj)
+
+            email_obj = EmailMessage('email/hello.tpl', {'token': token}, 'admin@admin.com', to=[self.email])
+            EmailThread(email_obj).start()
+            return Response({"details":"User activation resend successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"details":"Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get_tokens_for_user(self, user):
+        refresh = RefreshToken.for_user(user)
+        return str(refresh.access_token)
