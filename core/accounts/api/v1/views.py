@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import (RegistrationSerializer, CustomAuthTokenSerializer, 
-                          CustomTokenObtainPairSerializer, ChangePasswordSerializer, ProfileSerializer)
+                          CustomTokenObtainPairSerializer, ChangePasswordSerializer, ProfileSerializer, ActivationResendSerializer)
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
@@ -138,19 +138,17 @@ class ActivationAPIView(APIView):
         user_obj.save()
         return Response({"details": "Your account have been verified and activated successfully"})
     
-class ActivationResendAPIView(APIView):
-    def post(self, request, *args, **kwargs):
-        email = request.data.get("email")
-        if email:
-            self.email = "khalili.mohammad@gmail.com"
-            user_obj = get_object_or_404(User, email = self.email)
-            token = self.get_tokens_for_user(user_obj)
+class ActivationResendAPIView(generics.GenericAPIView):
+    serializer_class = ActivationResendSerializer
 
-            email_obj = EmailMessage('email/hello.tpl', {'token': token}, 'admin@admin.com', to=[self.email])
-            EmailThread(email_obj).start()
-            return Response({"details":"User activation resend successfully"}, status=status.HTTP_200_OK)
-        else:
-            return Response({"details":"Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        serializer = ActivationResendSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_obj = serializer.validated_data["user"]
+        token = self.get_tokens_for_user(user_obj)
+        email_obj = EmailMessage('email/activation_email.tpl', {'token': token}, 'admin@admin.com', to=[self.email])
+        EmailThread(email_obj).start()
+        return Response({"details":"User activation resend successfully"}, status=status.HTTP_200_OK)
     
     def get_tokens_for_user(self, user):
         refresh = RefreshToken.for_user(user)
