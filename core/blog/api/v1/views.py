@@ -1,8 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from .serializers import PostSerializer, CategorySerializer
-from ...models import Post, Category
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
@@ -14,6 +12,8 @@ from .permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter,OrderingFilter
 from .paginations import DefaultPagination
+from .serializers import PostSerializer, CategorySerializer
+from ...models import Post, Category
 
 # @api_view("GET","POST")
 # @permission_classes([IsAuthenticatedOrReadOnly])
