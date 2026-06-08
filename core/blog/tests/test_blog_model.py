@@ -4,20 +4,23 @@ from ..models import Post, Category
 from accounts.models import User, Profile
 
 class TestPostModel(TestCase):
-    def test_create_post_with_valid_date(self):
-        user = User.objects.create_user(email="test@test.com", password="Aa@123456")
-        profile = Profile.objects.create(
-            user = user,
+    def setUp(self):
+        self.user = User.objects.create_user(email="test@test.com", password="Aa@123456")
+        self.profile = Profile.objects.create(
+            user = self.user,
             first_name = "test_first_name",
             last_name = "test_last_name",
             description = "test description"
         )
+
+    def test_create_post_with_valid_date(self):
         post = Post.objects.create(
-            author = profile,
+            author = self.profile,
             title = "test",
             content = "description",
             status = True,
             category = None,
             published_date = datetime.now()
         )
-        self.assertEquals(post.title, "test")
+        self.assertTrue(Post.objects.filter(pk=post.id).exists())
+        self.assertEquals(post.title,"test")
